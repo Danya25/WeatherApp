@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  weather-api:
+    build:
+      context: .
+      dockerfile: WeatherApp/Dockerfile 
+    ports:
+      - 8000:81
+    networks:
+      - host_network
+    environment:
+      - ASPNETCORE_URLS=http://+:81
+
+  weather-ui:
+    build:
+      context: WeatherAppFront
+      dockerfile: Dockerfile
+    ports: 
+      - 4200:4200
+    networks:
+      - host_network
+
+networks:
+  host_network:
+    name: 'host_network'
