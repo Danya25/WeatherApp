@@ -1,0 +1,16 @@
+<div class="main-wrapper d-flex flex-row" style="margin-bottom: 15px">
+  <div class="weather-menu" style="margin-right: 15px">
+    <form [formGroup]="myForm">
+      <label for="zipCodeInput">Zip code</label>
+      <input id="zipCodeInput" type="number" min="0" class="form-control" [formControlName]="'zipCode'">
+
+      <label for="countryCodeInput">Country code</label>
+      <input id="countryCodeInput" type="text" class="form-control" [formControlName]="'countryCode'">
+
+      <button style="margin-top: 15px" class="btn btn-success" (click)="addWeather()" [disabled]="!myForm.valid">Add</button>
+    </form>
+  </div>
+  <div class="weather-items w-100">
+    <app-weather-item *ngFor="let weather of weathers" (onDeleteItem)="deleteWeather($event)" [weatherItem]="weather"></app-weather-item>
+  </div>
+</div>
