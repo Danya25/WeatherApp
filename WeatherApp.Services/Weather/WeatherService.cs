@@ -2,6 +2,7 @@
 using System.Text.Json;
 using WeatherApp.Common;
 using WeatherApp.Domain.DTO;
+using WeatherApp.Domain.Exceptions;
 using WeatherApp.Domain.Settings;
 using WeatherApp.Services.Interfaces;
 using WeatherApp.Services.Models;
@@ -27,8 +28,17 @@ namespace WeatherApp.Services.Weather
         {
             var request = await _httpClient.GetAsync($"{ApiUrl}zip={zipCode},{countryCode}&appid={_weatherSettings.Key}");
             var response = await request.Content.ReadAsStringAsync();
-            var data = JsonSerializer.Deserialize<WeatherDto>(response, Options);
-            return data;
+            try
+            {
+                var data = JsonSerializer.Deserialize<WeatherDto>(response, Options);
+                return data;
+            }
+            catch (JsonException)
+            {
+                var data = JsonSerializer.Deserialize<ApiError>(response, Options);
+                throw new ParsingException(data.Message);
+            }
+
         }
         public async Task<CityTemperatureDto> GetCityTemperature(string zipCode, string countryCode)
         {

@@ -1,6 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
+using WeatherApp.Domain.Exceptions;
+using WeatherApp.Domain.Extensions;
 using WeatherApp.Domain.Models;
 
 namespace WeatherApp.Middleware
@@ -17,13 +21,14 @@ namespace WeatherApp.Middleware
         }
         public async Task Invoke(HttpContext context)
         {
+
             try
             {
                 await _next(context);
             }
-            catch (ValidationException ex)
+            catch(ParsingException ex)
             {
-                await HandleExceptionAsync(context, ex);
+                await HandleParsingException(context, ex);
             }
             catch (Exception ex)
             {
@@ -31,16 +36,35 @@ namespace WeatherApp.Middleware
                 _logger.LogCritical(ex, "An error");
             }
         }
-        private async Task HandleExceptionAsync(HttpContext context, Exception ex, int statusCode = (int)HttpStatusCode.BadRequest)
+
+        private Task HandleParsingException(HttpContext context, ParsingException ex)
         {
+
             var problemDetails = ex.ToErrorMethodResult<object>();
+            problemDetails.ExceptionMessage = problemDetails.ExceptionMessage.FirstCharToUpper();
+            SetBedResponseWithJson(context);
 
-            context.Response.StatusCode = statusCode;
-            context.Response.ContentType = "application/json";
-
-            var result = JsonSerializer.Serialize(problemDetails);
-            await context.Response.WriteAsync(result);
+            return WriteResponseIntoContext(problemDetails, context);
         }
 
+        private Task HandleExceptionAsync(HttpContext context, Exception ex)
+        {
+            var problemDetails = ex.ToErrorMethodResult<object>();
+            SetBedResponseWithJson(context);
+            return WriteResponseIntoContext(problemDetails, context);
+        }
+
+
+
+        private Task WriteResponseIntoContext(object data, HttpContext context)
+        {
+            var result = JsonSerializer.Serialize(data);
+            return context.Response.WriteAsync(result);
+        }
+        private void SetBedResponseWithJson(HttpContext context)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            context.Response.ContentType = "application/json";
+        }
     }
 }

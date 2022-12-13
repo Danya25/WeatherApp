@@ -17,9 +17,9 @@ namespace WeatherApp.Controllers
         }
 
         [HttpGet("GetWeatherByZip")]
-        public async Task<CityTemperatureDto> GetByZipCode(string zipCode, string countryCode = "us")
+        public async Task<CityTemperatureDto> GetByZipCode([FromQuery] ZipCountryDto info)
         {
-            return await _weatherService.GetCityTemperature(zipCode, countryCode);
+            return await _weatherService.GetCityTemperature(info.ZipCode, info.CountryCode);
         }
 
 
