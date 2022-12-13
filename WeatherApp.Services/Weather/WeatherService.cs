@@ -27,15 +27,8 @@ namespace WeatherApp.Services.Weather
         {
             var request = await _httpClient.GetAsync($"{ApiUrl}zip={zipCode},{countryCode}&appid={_weatherSettings.Key}");
             var response = await request.Content.ReadAsStringAsync();
-            try
-            {
-                var data = JsonSerializer.Deserialize<WeatherDto>(response, Options);
-                return data;
-            }
-            catch
-            {
-                throw;
-            }
+            var data = JsonSerializer.Deserialize<WeatherDto>(response, Options);
+            return data;
         }
         public async Task<CityTemperatureDto> GetCityTemperature(string zipCode, string countryCode)
         {

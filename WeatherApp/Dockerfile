@@ -6,13 +6,11 @@ WORKDIR /src
 
 COPY ["WeatherApp/WeatherApp.csproj", "WeatherApp/"]
 COPY ["WeatherApp.Common/WeatherApp.Common.csproj", "WeatherApp.Common/"]
-COPY ["WeatherApp.DAL/WeatherApp.DAL.csproj", "WeatherApp.DAL/"]
 COPY ["WeatherApp.Domain/WeatherApp.Domain.csproj", "WeatherApp.Domain/"]
 COPY ["WeatherApp.Services/WeatherApp.Services.csproj", "WeatherApp.Services/"]
 
 RUN dotnet restore "WeatherApp/WeatherApp.csproj"
 RUN dotnet restore "WeatherApp.Common/WeatherApp.Common.csproj"
-RUN dotnet restore "WeatherApp.DAL/WeatherApp.DAL.csproj"
 RUN dotnet restore "WeatherApp.Domain/WeatherApp.Domain.csproj"
 RUN dotnet restore "WeatherApp.Services/WeatherApp.Services.csproj"
 
