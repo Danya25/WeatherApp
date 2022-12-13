@@ -1,16 +1,20 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using WeatherApp.Common;
 using WeatherApp.Domain.DTO;
 using WeatherApp.Domain.Settings;
 using WeatherApp.Services.Interfaces;
+using WeatherApp.Services.Models;
 
 namespace WeatherApp.Services.Weather
 {
     public class WeatherService : IWeatherService
     {
         private const string ApiUrl = "https://api.openweathermap.org/data/2.5/weather?";
+        private readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
         private readonly HttpClient _httpClient;
         private readonly WeatherSettings _weatherSettings;
@@ -22,25 +26,27 @@ namespace WeatherApp.Services.Weather
         public async Task<WeatherDto> GetWeatherByZipCode(string zipCode, string countryCode)
         {
             var request = await _httpClient.GetAsync($"{ApiUrl}zip={zipCode},{countryCode}&appid={_weatherSettings.Key}");
-            var response = await request.Content.ReadAsStreamAsync();
-            var options = new JsonSerializerOptions
+            var response = await request.Content.ReadAsStringAsync();
+            try
             {
-                PropertyNameCaseInsensitive = true
-            };
-            var data = await JsonSerializer.DeserializeAsync<WeatherDto>(response, options);
-
-            return data;
+                var data = JsonSerializer.Deserialize<WeatherDto>(response, Options);
+                return data;
+            }
+            catch
+            {
+                throw;
+            }
         }
-
         public async Task<CityTemperatureDto> GetCityTemperature(string zipCode, string countryCode)
         {
             var result = await GetWeatherByZipCode(zipCode, countryCode);
             return new CityTemperatureDto
             {
                 City = result.Name,
-                TempFarenheit = result.Main.Temp,
-                TempDegree = TemperatureConverter.FarenheitToDegree(result.Main.Temp),
+                Fahrenheit = result.Main.Temp,
+                Degree = TemperatureConverter.FarenheitToDegree(result.Main.Temp),
             };
         }
+
     }
 }
