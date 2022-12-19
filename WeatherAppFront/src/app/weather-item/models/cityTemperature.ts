@@ -1,5 +1,5 @@
 export interface CityTemperature{
   city: string;
-  degree: string;
+  celsius: string;
   fahrenheit: string;
 }

@@ -1,8 +1,8 @@
 <div class="card">
   <h5 class="card-header">{{weatherItem.city}}</h5>
   <div class="card-body">
-    <h5 class="card-title">Fahrenheit: {{weatherItem.degree | number : '1.2-2'}}</h5>
-    <p class="card-text">Degree: {{weatherItem.degree | number : '1.2-2'}}</p>
+    <h5 class="card-title">Fahrenheit: {{weatherItem.fahrenheit | number : '1.2-2'}}</h5>
+    <p class="card-text">Celsius: {{weatherItem.celsius | number : '1.2-2'}}</p>
     <a class="btn btn-error" (click)="deleteItem(weatherItem)">Delete</a>
   </div>
 </div>

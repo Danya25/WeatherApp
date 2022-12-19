@@ -2,14 +2,9 @@
 {
     public static class TemperatureConverter
     {
-        /// <summary>
-        /// Convert Farenheit to Degree.
-        /// </summary>
-        /// <param name="farenheitValue"></param>
-        /// <returns></returns>
-        public static double FarenheitToDegree(double farenheitValue)
+        public static double CelsiusToFarenheit(double сelsius)
         {
-            return (farenheitValue - 32) / 1.8;
+            return сelsius * 1.8 + 32;
         }
     }
 }

@@ -3,7 +3,7 @@
     public class CityTemperatureDto
     {
         public string City { get; set; }
-        public double Degree { get; set; }
+        public double Celsius { get; set; }
         public double Fahrenheit { get; set; }
 
     }

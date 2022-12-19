@@ -26,7 +26,8 @@ namespace WeatherApp.Services.Weather
         }
         public async Task<WeatherDto> GetWeatherByZipCode(string zipCode, string countryCode)
         {
-            var request = await _httpClient.GetAsync($"{ApiUrl}zip={zipCode},{countryCode}&appid={_weatherSettings.Key}");
+            //In celcium
+            var request = await _httpClient.GetAsync($"{ApiUrl}zip={zipCode},{countryCode}&appid={_weatherSettings.Key}&units=metric");
             var response = await request.Content.ReadAsStringAsync();
             try
             {
@@ -46,8 +47,8 @@ namespace WeatherApp.Services.Weather
             return new CityTemperatureDto
             {
                 City = result.Name,
-                Fahrenheit = result.Main.Temp,
-                Degree = TemperatureConverter.FarenheitToDegree(result.Main.Temp),
+                Fahrenheit = TemperatureConverter.CelsiusToFarenheit(result.Main.Temp),
+                Celsius = result.Main.Temp,
             };
         }
 
